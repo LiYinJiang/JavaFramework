@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="eryingzhang.net.pojo">
+	<insert id="insertNameOfHero" parameterType="NameOfHero">
+		insert into
+		name_of_hero_ (tmId,hid) values(#{tmId},#{hid})
+	</insert>
+	<parameterMap type="NameOfHero" id="nameOfHero">
+		<parameter property="tmId" javaType="_int" />
+		<parameter property="hid" javaType="_int" />
+	</parameterMap>
+	<resultMap type="NameOfHero" id="nameOfHeros">
+		<id property="id" column="id" />
+		<result property="tmId" column="tmId" javaType="_int" />
+		<result property="hid" column="hid" javaType="_int" />
+	</resultMap>
+	<select id="listNameOfHero" resultMap="nameOfHeros">
+		select * from
+		name_of_hero_
+	</select>
+</mapper> 
+   

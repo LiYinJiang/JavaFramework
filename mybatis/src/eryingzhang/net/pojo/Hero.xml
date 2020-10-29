@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="eryingzhang.net.pojo">
+	<!-- <select id="listHero" resultType="Hero"> select * from hero_ </select> -->
+	<insert id="addHero" parameterType="Hero">
+		insert into hero_ (name)
+		values(#{name})
+	</insert>
+	<delete id="deleteHero" parameterType="Hero">
+		delete from hero_ where id
+		= #{id}
+	</delete>
+	<select id="selectHero" parameterType="_int" resultType="Hero">
+		select *
+		from hero_ where id = #{id}
+	</select>
+	<update id="updateHero" parameterType="Hero">
+		update hero_ set name =
+		#{name} where id = #{id}
+	</update>
+	<select id="listHeroByName" parameterType="string"
+		resultType="Hero">
+		select * from hero_ where name like concat('%', #{0}, '%')
+	</select>
+	<select id="listHeroByIdAndName" parameterType="map"
+		resultType="Hero">
+		select * from hero_ where name like concat('%', #{name},
+		'%') and id > #{id}
+	</select>
+	<!-- 一对多的关系 -->
+	<!-- property:集合属性的值，ofType: 集合元素的类型 -->
+	<resultMap type="Hero" id="heroBean">
+		<id column="hid" property="id" />
+		<result column="hname" property="name" />
+		<collection property="equipments" ofType="Equipment">
+			<id column="eid" property="id" />
+			<result column="ename" property="name" />
+			<result column="price" property="price" />
+		</collection>
+	</resultMap>
+	<select id="listHero" resultMap="heroBean">
+		select h.*,e.*, h.id 'hid', e.id
+		'eid',h.name 'hname',e.name 'ename' from hero_ h left join equipment_
+		e on h.id = e.hid
+	</select>
+</mapper>

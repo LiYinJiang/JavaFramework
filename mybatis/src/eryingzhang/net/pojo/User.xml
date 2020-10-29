@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="eryingzhang.net.pojo">
+<!-- 支持二次缓存  即 同一个SessionFactory 的session 缓存共享 --> 
+	<cache />
+	<select id="listUser" resultType="User">
+		select * from user_
+	</select>
+	<select id="getUser" parameterType="_int" resultType="User">
+	select * from user_ where id = #{id}
+	</select>
+	
+	<delete id="deleteUser" parameterType="_int">
+		delete from user_ where id
+		= #{id}
+	</delete>
+	<insert id="insertUser" parameterType="User">
+		insert into user_
+		(name,age) values(#{name},#{age})
+	</insert>
+	<select id="listUserPage" resultType="User">
+		select * from user_
+		<if test="start !=null and count != null">
+			limit #{start},#{count}
+		</if>
+	</select>
+</mapper>

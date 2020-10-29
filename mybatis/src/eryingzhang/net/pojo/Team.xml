@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="eringzhang.net.pojo">
+	<select id="selectTeam" parameterType="_int" resultType="team_">
+		select *
+		from team_ where id = #{id}
+	</select>
+	<update id="updateTeam" parameterType="team_">
+		update team set name =
+		#{name} where id = #{id}
+	</update>
+	<delete id="deleteTeam" parameterType="_int">
+		delete * from team_ where
+		id = #{id}
+	</delete>
+	<insert id="insertMember" parameterType="teamMember">
+	insert into team_members 
+	</insert>
+
+	<!-- 一对多 -->
+	<select id="memberList" parameterType="teamMembers">
+		select t.*, tm.*, t.id
+		'tid', tm.id 'tmid', t.name 'tname', tm.name 'tmname'
+		from team_ t left
+		join team_members_ tm on t.id = tm.tid
+	</select>
+	<resultMap type="TeamMembers" id="teamMembers">
+		<id property="id" column="tmId" />
+		<result property="name" column="tmName" />
+
+	</resultMap>
+	<resultMap type="TeamMember" id="teamMember">
+		<id property="id" column="tmId" />
+		<result property="name" column="tmName" />
+		<result property="tid" column="teamID" />
+		<collection property="heros" ofType="Hero">
+			<id column="hid" property="id" />
+			<result column="hname" property="name" />
+			<collection property="equipments" ofType="Equipment">
+				<id column="eid" property="id" />
+				<result column="ename" property="name" />
+				<result column="price" property="price" />
+			</collection>
+		</collection>
+	</resultMap>
+</mapper>
+    

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="eringzhang.net.pojo">
+
+	<select id="selectTeamMember" parameterType="_int"
+		resultType="TeamMember">
+		select * from team_member_ where id = #{id}
+	</select>
+	<select id="listTeamMember" resultType="TeamMember">
+		select * from team_member_
+		<where>
+			<if test="name!=null">
+				and name like concat('%',#{name},'%')
+			</if>
+			<if test="id>0">
+				and id >= #{id}
+			</if>
+		</where>
+	</select>
+
+	<select id="listTeamMemberByOtherWise" resultType="TeamMember">
+		select * from team_member_
+		<where>
+			<choose>
+				<when test="name!=null">
+					and name like concat('%',#{name}, '%')
+				</when>
+				<when test="tid != null and tid != 0 ">
+					and tid = #{tid}
+				</when>
+				<otherwise>id >1</otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<select id="listTeamMemberByForEach" resultType="TeamMember">
+		select * from team_member_
+		where id in
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<update id="updateTeamMember" parameterType="TeamMember">
+		update team_member_
+		<!-- <set> <if test="name!=null">name=#{name},</if> <if test="tid!=null">tid=#{tid}</if> 
+			</set> -->
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="name != null">name=#{name},</if>
+			<if test="tid != null">tid=#{tid}</if>
+
+		</trim>
+		<where>
+			<if test="id>0">
+				and id >= #{id}
+			</if>
+		</where>
+	</update>
+	
+	<![CDATA[
+bind取代模糊查询的好处是提高了代码的可移植性。
+
+在进行模糊查询时，如果是MySQL数据库，常常用到的是一个concat，它用'%'和参数相连。然而在Oracle数据库则没有，Oracle数据库用连接符号”||“。
+
+当我们有了bind元素，就不必使用数据库语言，而是使用MyBatis的动态SQL即可完成。所以无论是MySQL还是Oracle都可以使用这样的语句，从而提高了代码的可移植性。
+mysql 
+select * from team_member_ where name like concat('%', '#{0}', '%');
+oracle
+select * from team_member_ where name like '%' ||  '#{0} ' || '%' ;
+mybatis 使用bind
+<select id="listTeamMember"  resultType="TeamMember">
+select * from team_member_ where name like
+ <bind name="likename" value="'%' + name + '%'">
+#{likename}
+</bind>
+</select>
+	 ]]>
+	<select id="listTeamMemberByBindName" resultType="TeamMember"
+		parameterType="map">
+		select * from team_member_
+		<where>
+			<if test="name!= null and name != ''">
+				<bind name="likename" value="'%' + name + '%'" />
+				name like #{likename}
+			</if>
+		</where>
+	</select>
+
+
+
+</mapper>

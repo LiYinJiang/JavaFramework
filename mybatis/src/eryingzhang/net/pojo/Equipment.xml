@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="eryingzhang.net.pojo">
+<select id="selectEquipment" parameterType="_int" resultType="Equipment">
+select * from equipment_ where id=#{id}
+</select>
+<update id="updateEquipment" parameterType="Equipment">
+update equipment_ set hid = #{hero.id} where id =#{id}</update>
+<delete id="deleteEquipemnt" parameterType="_int">
+delete from equipment_ where id = #{id}
+</delete>
+<insert id="insertEquipment" parameterType="Equipment">
+insert into equipment_ (name,price,hid)
+		values(#{name},#{price}, #{hid})
+</insert>
+<!-- 多对一 -->
+	<resultMap type="Equipment" id="equipmentBean">
+		<id property="id" column="eid" />
+		<result property="name" column="ename" />
+		<result property="price" column="price" />
+		<association property="hero" javaType="Hero">
+			<id property="id" column="hid" />
+			<result property="name" column="hname" />
+		</association>
+	</resultMap>
+
+	<select id="liseEquipment" resultMap="equipmentBean">
+	select h.*, e.*, h.id 'hid', e.id 'eid',h.name 'hname', e.name 'ename' from equipment_ e left join hero_ h on  
+	e.hid = h.id
+	</select>
+</mapper>
