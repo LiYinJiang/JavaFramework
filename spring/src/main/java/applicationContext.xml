@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/aop
+   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+   http://www.springframework.org/schema/tx
+   http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+   http://www.springframework.org/schema/context     
+   http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<!-- 告知spring 通过注解进行配置 -->
+	<context:annotation-config />
+
+	<context:component-scan
+		base-package="eryingzhang.net.service" />
+	<context:component-scan
+		base-package="eryingzhang.net.aspect" />
+	<aop:aspectj-autoproxy />
+	<!-- servcie -->
+	<bean name="s" class="eryingzhang.net.service.HeroService" />
+	<!-- log -->
+	<bean id="loggerAspect"
+		class="eryingzhang.net.aspect.LoggerAspect" />
+	<bean id="timingAspect"
+		class="eryingzhang.net.aspect.TimingAspect" />
+
+	<aop:config>
+		<aop:pointcut id="loggerCutpoint"
+			expression="execution(* eryingzhang.net.service.HeroService.*(..))" />
+		<aop:aspect id="logAspect" ref="loggerAspect">
+			<aop:around method="log" pointcut-ref="loggerCutpoint" />
+		</aop:aspect>
+	</aop:config>
+
+</beans>
